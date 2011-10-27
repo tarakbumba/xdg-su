@@ -1,0 +1,54 @@
+xdg-su
+---------
+
+    The xdg-su script us an unmaintained part of xdg-utils package 
+which is a set of simple scripts that provide basic desktop integration 
+functions for any Free Desktop, such as Linux.
+
+    They are intended to provide a set of defacto standards.  This
+means that:
+    *  Third party software developers can rely on these xdg-su
+       for all of their simple root integration needs.
+
+    *  Developers of desktop environments can make sure that their
+       environments are well supported
+
+       If a desktop developer wants to be certain that their environment
+       functions with all third party software, then can simply
+       make sure that these utilities work properly in their environment.
+
+       This will hopefully mean that 'third tier' window managers
+       such as XFCE and Blackbox can reach full parity with Gnome and KDE
+       in terms of third party ISV support.
+
+    *  Distribution vendors can provide custom versions of these utilities
+
+       If a distribution vendor wishes to have unusual systems,
+       they can provide custom scripts, and the third party software
+       should still continue to work.
+
+
+BUILD:
+------
+
+    Building is not required, xdg-su  script is located in the
+scripts/ subdirectory and is ready to be used.
+
+    You can optionally choose to install the script
+to a target directory.  To do this, you could issue
+the following commands:
+         ./configure [--prefix=<your-place-here>]
+        make install
+that would cause the scripts to be installed to
+  <your-place-here>/bin
+
+
+USE:
+----
+
+    Although I expect that this scripts will generally come as part
+of the operating system, i recommend that you package the scripts
+that your application needs along with your product as a fallback. 
+
+    I recommend that you place this script in a directory, and
+then add that directory to the end of the PATH.

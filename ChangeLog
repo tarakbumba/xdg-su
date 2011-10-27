@@ -1,0 +1,8 @@
+=== xdg-su 1.1beta1 ====
+
+2010-08-25 Atilla ÖNTAŞ <atilla_ontas@mandriva.org>
++ Pick Aurelien Lefebvre's implementation of xdg-su script
++ Added: ability to use "sudo" 
++ Added: detect if host distro is Ubuntu and use sudo automatically
++ Added: ability use gksu on gnome desktop
++ Added: ability to detect xfce desktop and run appropriate command
