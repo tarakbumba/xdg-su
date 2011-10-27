@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>xdg-su</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="refentry" lang="en"><a name="xdg-su"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>xdg-su &#8212; run a GUI program as root after prompting for the root password</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  <code class="option">-s <em class="replaceable"></em></code> [<code class="option">-u <em class="replaceable"><code>user</code></em></code>]  <code class="option">-c <em class="replaceable"><code>command</code></em></code> </p></div><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  { <code class="option">--help</code>  |   <code class="option">--manual</code>  |   <code class="option">--version</code> }</p></div></div><div class="refsect1" lang="en"><a name="description"></a><h2>Description</h2><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>xdg-su</title><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="refentry" title="xdg-su"><a name="xdg-su"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>xdg-su &#8212; run a GUI program as root after prompting for the root password</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  [<code class="option">-u <em class="replaceable"><code>user</code></em></code>]  <code class="option">-c <em class="replaceable"><code>command</code></em></code>   <code class="option">-s</code> </p></div><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  { <code class="option">--help</code>  |   <code class="option">--manual</code>  |   <code class="option">--version</code> }</p></div></div><div class="refsect1" title="Description"><a name="description"></a><h2>Description</h2><p>
       xdg-su provides a graphical dialog that prompts the user for a password
       to run <em class="replaceable"><code>command</code></em> as <em class="replaceable"><code>user</code></em>
       or as root if no user was specified.
@@ -7,19 +7,21 @@
     </p><p>
       xdg-su discards any stdout and stderr output from
       <em class="replaceable"><code>command</code></em>.
-    </p></div><div class="refsect1" lang="en"><a name="options"></a><h2>Options</h2><div class="variablelist"><dl><dt><span class="term"><code class="option">-u <em class="replaceable"><code>user</code></em></code></span></dt><dd>
+    </p><p>
+      You can create an empty "xdg-sudo" file in /etc to use sudo
+      as default to override default "su" mechanism and can avoid using "-s" option.
+    </p></div><div class="refsect1" title="Options"><a name="options"></a><h2>Options</h2><div class="variablelist"><dl><dt><span class="term"><code class="option">-u <em class="replaceable"><code>user</code></em></code></span></dt><dd>
 	    run <em class="replaceable"><code>command</code></em> as
             <em class="replaceable"><code>user</code></em>. The default is to run as root.
 	  </dd><dt><span class="term"><code class="option">-s</code></span></dt><dd>
-	    run <em class="replaceable"><code>command</code></em> as
-	    root via sudo
+	    run <em class="replaceable"><code>command</code></em> via sudo
 	  </dd><dt><span class="term"><code class="option">--help</code></span></dt><dd>
 	    Show command synopsis.
 	  </dd><dt><span class="term"><code class="option">--manual</code></span></dt><dd>
 	    Show this manualpage.
 	  </dd><dt><span class="term"><code class="option">--version</code></span></dt><dd>
             Show the xdg-utils version information.
-          </dd></dl></div></div><div class="refsect1" lang="en"><a name="exitcodes"></a><h2>Exit Codes</h2><p>
+          </dd></dl></div></div><div class="refsect1" title="Exit Codes"><a name="exitcodes"></a><h2>Exit Codes</h2><p>
       An exit code of 0 indicates success while a non-zero exit code
       indicates failure. The following failure codes can be returned:
     </p><div class="variablelist"><dl><dt><span class="term"><code class="option">1</code></span></dt><dd>
@@ -30,8 +32,9 @@
 	    A required tool could not be found. 
 	  </dd><dt><span class="term"><code class="option">4</code></span></dt><dd>
 	    The action failed. 
-	  </dd></dl></div></div><div class="refsect1" lang="en"><a name="seealso"></a><h2>See Also</h2><p><span class="citerefentry"><span class="refentrytitle">su</span>(1)</span>
-    </p></div><div class="refsect1" lang="en"><a name="examples"></a><h2>Examples</h2><p>
+	  </dd></dl></div></div><div class="refsect1" title="See Also"><a name="seealso"></a><h2>See Also</h2><p><span class="citerefentry"><span class="refentrytitle">su</span>(1)</span>
+    </p><p><span class="citerefentry"><span class="refentrytitle">sudo</span></span>
+    </p></div><div class="refsect1" title="Examples"><a name="examples"></a><h2>Examples</h2><p>
 </p><pre class="programlisting">
 xdg-su -s -u root -c "/opt/shinythings/bin/install-GUI --install fast"
 </pre><p>

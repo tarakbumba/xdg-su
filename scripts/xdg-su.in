@@ -11,7 +11,7 @@
 #   Copyright 2006, Jeremy White <jwhite@codeweavers.com>
 #   Copyright 2006, Kevin Krammer <kevin.krammer@gmx.at>
 #   Copyright 2009, Aurelien Lefebvre <alefebvre@mandriva.com>
-#   Copyright 2010, Atilla ÖNTAŞ <atilla_ontas@mandriva.org>
+#   Copyright 2010-2011, Atilla ÖNTAŞ <tarakbumba@gmail.com>
 #
 #   LICENSE:
 #
@@ -36,14 +36,18 @@
 #---------------------------------------------
 
 distrib=`test -f /etc/lsb-release && 
-         cat /etc/lsb-release | 
-         grep "DISTRIB_ID" | 
-         sed 's/DISTRIB_ID=\([A-Za-z]\\)/\1/'`
+	  cat /etc/lsb-release | 
+	  grep "DISTRIB_ID" | 
+	  sed 's/DISTRIB_ID=\([A-Za-z]\\)/\1/'`
+
 if [ -z $distrib ]; then
   distrib="Unknown"
 fi
-  
 
+if test -f /etc/xdg-sudo; then 
+  distrib="Ubuntu"
+fi
+  
 manualpage()
 {
 cat << _MANUALPAGE
@@ -53,7 +57,7 @@ xdg-su - run a GUI program as root after prompting for the root password
 
 Synopsis
 
-xdg-su [-u user] -c command
+xdg-su [-u user] -s -c command
 
 xdg-su { --help | --manual | --version }
 
@@ -71,7 +75,9 @@ Options
 -u user
     run command as user. The default is to run as root.
 -s
-    run command via sudo. Ubuntu users don't need this option..
+    run command via sudo. Ubuntu users don't need this option.
+    You can create an empty "xdg-sudo" file in /etc to use sudo
+    as default to override default and avoid using this option.
 --help
     Show command synopsis.
 --manual
@@ -114,6 +120,7 @@ usage()
 {
 cat << _USAGE
 xdg-su - run a GUI program as root after prompting for the root password
+Create an empty "xdg-sudo" file in /etc to use sudo as default.
 
 Synopsis
 
@@ -293,7 +300,7 @@ check_common_commands()
             ;;
 
             --version)
-            echo "xdg-su 1.1beta1"
+            echo "xdg-su 1.1beta2"
             exit_success
             ;;
         esac
@@ -318,6 +325,7 @@ detectDE()
     if [ x"$KDE_FULL_SESSION" = x"true" ]; then DE=kde;
     elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=gnome;
     elif xprop -root _DT_SAVE_MODE | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=xfce;
+    elif [[ `ps aux` =~ ""lxsession"" ]]; then DE=lxde;
     fi
 }
 
@@ -347,11 +355,21 @@ sudo_gnome()
 sudo_kde()
 {
     GSU=`which kdesudo 2>/dev/null`
+    if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
+        KDESU=`kde4-config --locate kdesu --path exe 2>/dev/null`
+    else
+        KDESU=`which kdesu 2>/dev/null`
+    fi
+    if [ -z "$GSU" ] ; then
+      KSU=$KDESU
+    else
+      KSU=$GSU
+    fi
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
-            $GSU "$cmd"
+            $KSU "$cmd"
         else
-            $GSU -u "$user" "$cmd"
+            $KSU -u "$user" "$cmd"
         fi
 
         if [ $? -eq 0 ]; then
@@ -372,18 +390,20 @@ su_kde()
         KDESU=`which kdesu 2>/dev/null`
         if [ $? -ne 0 -a $distrib = "Ubuntu" ] ; then
             KDESU=`which kdesudo 2>/dev/null`
+	else
+	    KDESU=`which kdesu 2>/dev/null`
         fi
     fi
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
              if [ $distrib = "Ubuntu" ]; then
-                  /usr/bin/kdesudo "$cmd"
+                  $KDESU "$cmd"
              else
                   $KDESU -c "$cmd"
              fi
         else
              if [ $distrib = "Ubuntu" ]; then
-                  /usr/bin/kdesudo -u "$user" "$cmd"
+                  $KDESU -u "$user" "$cmd"
              else
                   $KDESU -u "$user" -c "$cmd"
              fi
@@ -534,7 +554,7 @@ case "$DE" in
         fi
     ;;
 
-    gnome)
+    gnome*|lxde*|xfce)
         if [ $distrib = "Ubuntu" ]; then
             sudo_gnome
         else
@@ -544,10 +564,6 @@ case "$DE" in
 
     generic)
     su_generic
-    ;;
-
-    xfce)
-    su_xfce
     ;;
 
      *)

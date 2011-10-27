@@ -21,16 +21,11 @@
     </author>
     <address><email>jwhite@codeweavers.com</email></address>
     <author>
-      <firstname>Aurelien</firstname>
-      <surname>Lefebvre</surname>
-    </author>
-    <address><email>atilla_ontas@mandriva.org</email></address>
-    <author>
       <firstname>Atilla</firstname>
       <surname>ÖNTAŞ</surname>
     </author>
-    <address><email>alefebvre@mandriva.com</email></address>
-    <releaseinfo>This is release 0.6 of the xdg-su Manual.</releaseinfo>
+    <address><email>tarakbumba@gmail.com</email></address>
+    <releaseinfo>This is release 0.7 of the xdg-su Manual.</releaseinfo>
   </refentryinfo>
 
   <refmeta>
@@ -73,6 +68,10 @@
     <para>
       xdg-su discards any stdout and stderr output from
       <replaceable>command</replaceable>.
+    </para>
+    <para>
+      You can create an empty "xdg-sudo" file in /etc to use sudo
+      as default to override default "su" mechanism and can avoid using "-s" option.
     </para>
   </refsect1>
   <refsect1 id="options">
@@ -171,6 +170,9 @@
     <title>See Also</title>
     <para><citerefentry><refentrytitle>su</refentrytitle>
         <manvolnum>1</manvolnum>
+      </citerefentry>
+    </para>
+    <para><citerefentry><refentrytitle>sudo</refentrytitle>
       </citerefentry>
     </para>
   </refsect1>
