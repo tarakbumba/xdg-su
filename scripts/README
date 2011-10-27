@@ -1,13 +1,12 @@
 
-xdg-su - run a GUI program as root after prompting for the root password
+   xdg-su - run a GUI program as root after prompting for the root password
 
 Synopsis
 
-   xdg-su [-u user] -c command -s
+   xdg-su -s [-x] [-u user] -c command
 
    xdg-su { --help | --manual | --version }
 
 xdg-su - run a GUI program as root after prompting for the root password
 Create an empty "xdg-sudo" file in /etc to use sudo as default.
-
 

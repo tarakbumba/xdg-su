@@ -35,10 +35,19 @@
 #
 #---------------------------------------------
 
-distrib=`test -f /etc/lsb-release && 
+# Version of the application
+#---------------------------------------------
+VERSION="xdg-su 1.1rc1"
+
+#------------------------------------------------------------------------------
+# Find if  we' re on a *buntu distro
+# It is important to using sudo as default, without config
+#------------------------------------------------------------------------------
+
+distrib=$(test -f /etc/lsb-release && 
 	  cat /etc/lsb-release | 
 	  grep "DISTRIB_ID" | 
-	  sed 's/DISTRIB_ID=\([A-Za-z]\\)/\1/'`
+	  sed 's/DISTRIB_ID=\([A-Za-z]\\)/\1/')
 
 if [ -z $distrib ]; then
   distrib="Unknown"
@@ -72,16 +81,27 @@ xdg-su discards any stdout and stderr output from command.
 
 Options
 
+-c command
+    to run command you must use this. Otherwise xdg-su won't work!
+    
 -u user
     run command as user. The default is to run as root.
+
 -s
-    run command via sudo. Ubuntu users don't need this option.
+    run command via sudo. Sudo must be properly configured to use this option.
+    *buntu Linux users don't need this option.
     You can create an empty "xdg-sudo" file in /etc to use sudo
     as default to override default and avoid using this option.
+
+-x
+   run command via su, if default is sudo.
+   
 --help
     Show command synopsis.
+    
 --manual
     Show this manualpage.
+    
 --version
     Show the xdg-utils version information.
 
@@ -124,7 +144,7 @@ Create an empty "xdg-sudo" file in /etc to use sudo as default.
 
 Synopsis
 
-xdg-su -s [-u user] -c command
+xdg-su -s [-x] [-u user] -c command
 
 xdg-su { --help | --manual | --version }
 
@@ -248,7 +268,7 @@ check_input_file()
 
 check_vendor_prefix()
 {
-    file=`basename "$1"`
+    file=$(basename "$1")
     case "$file" in
        [a-zA-Z]*-*)
          return
@@ -271,7 +291,7 @@ check_output_file()
             exit_failure_file_permission_write "no permission to write to file '$1'"
         fi
     else
-        DIR=`dirname "$1"`
+        DIR=$(dirname "$1")
         if [ ! -w "$DIR" -o ! -x "$DIR" ]; then
             exit_failure_file_permission_write "no permission to create file '$1'"
         fi
@@ -300,7 +320,7 @@ check_common_commands()
             ;;
 
             --version)
-            echo "xdg-su 1.1beta2"
+            echo "$VERSION"
             exit_success
             ;;
         esac
@@ -316,6 +336,38 @@ else
     xdg_redirect_output=" >&2"
 fi
 
+#-------------------------------------------------------
+## Checks if user specified "sudo" usage
+#-------------------------------------------------------
+
+check_use_sudo()
+{
+    while [ $# -gt 0 ] ; do
+        parm="$1"
+        shift
+
+        case "$parm" in
+           -s)
+	    SUDO=$(which sudo 2>/dev/null)
+	    if [ -z "$SUDO" ] ; then
+	       exit_failure_syntax "Application 'sudo'  does not exist in your system. Please install it if you want use to..."
+	   else
+            distrib="Ubuntu"
+            fi
+            shift
+            ;;
+            
+           -x)
+	    distrib="Unknown"
+            shift
+            ;;
+        esac
+    done
+}
+
+check_use_sudo  "$@"
+
+
 #--------------------------------------
 # Checks for known desktop environments
 # set variable DE to the desktop environments name, lowercase
@@ -325,16 +377,21 @@ detectDE()
     if [ x"$KDE_FULL_SESSION" = x"true" ]; then DE=kde;
     elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=gnome;
     elif xprop -root _DT_SAVE_MODE | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=xfce;
-    elif [[ `ps aux` =~ ""lxsession"" ]]; then DE=lxde;
+    elif [[ )ps aux) =~ ""lxsession"" ]]; then DE=lxde;
     fi
 }
 
 #----------------------------------------------------------------------------
 
+#----------------------------------------------------------------------------------------
+# SUDO USAGE ON GNOME. 
+# If gksudo is present then use it. Otherwise default to gksu. 
+# If neither kdesudo nor kdesu is presnt use a terminal
+#----------------------------------------------------------------------------------------
 
 sudo_gnome()
 {
-    GSU=`which gksudo 2>/dev/null`
+    GSU=$(which gksudo 2>/dev/null)
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
             $GSU "$cmd"
@@ -352,63 +409,38 @@ sudo_gnome()
     fi
 }
 
+#----------------------------------------------------------------------------------------
+# SUDO USAGE ON KDE. 
+# If kdesudo is present then use it. Otherwise default to kdesu. 
+# If neither kdesudo nor kdesu is presnt use a terminal
+#----------------------------------------------------------------------------------------
 sudo_kde()
 {
-    GSU=`which kdesudo 2>/dev/null`
+    KDESUDO=$(which kdesudo 2>/dev/null)
     if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
-        KDESU=`kde4-config --locate kdesu --path exe 2>/dev/null`
+        KDE_SU=$(kde4-config --locate kdesu --path exe 2>/dev/null)
     else
-        KDESU=`which kdesu 2>/dev/null`
+        KDE_SU=$(which kdesu 2>/dev/null)
     fi
-    if [ -z "$GSU" ] ; then
-      KSU=$KDESU
+    if [ -z "$KDESUDO" ] ; then
+      KDESU=$KDE_SU
     else
-      KSU=$GSU
+      KDESU=$KDESUDO
     fi
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
-            $KSU "$cmd"
-        else
-            $KSU -u "$user" "$cmd"
-        fi
-
-        if [ $? -eq 0 ]; then
-            exit_success
-        else
-            exit_failure_operation_failed
-        fi
-    else
-        su_generic
-    fi
-}
-
-su_kde()
-{
-    if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
-        KDESU=`kde4-config --locate kdesu --path exe 2>/dev/null`
-    else
-        KDESU=`which kdesu 2>/dev/null`
-        if [ $? -ne 0 -a $distrib = "Ubuntu" ] ; then
-            KDESU=`which kdesudo 2>/dev/null`
-	else
-	    KDESU=`which kdesu 2>/dev/null`
-        fi
-    fi
-    if [ $? -eq 0 ] ; then
-        if [ -z "$user" ] ; then
-             if [ $distrib = "Ubuntu" ]; then
+             if [ $KDESU = "$KDESUDO"]; then
                   $KDESU "$cmd"
              else
                   $KDESU -c "$cmd"
              fi
         else
-             if [ $distrib = "Ubuntu" ]; then
-                  $KDESU -u "$user" "$cmd"
+             if [ $KDESU = "$KDESUDO" ]; then
+                  $KDESUDO -u "$user" "$cmd"
              else
-                  $KDESU -u "$user" -c "$cmd"
+                  $KDESUDO -u "$user" -c "$cmd"
              fi
         fi
-
         if [ $? -eq 0 ]; then
             exit_success
         else
@@ -419,13 +451,58 @@ su_kde()
     fi
 }
 
+#----------------------------------------------------------------------------------------
+# Su usage on KDE. 
+#----------------------------------------------------------------------------------------
+
+su_kde()
+{
+    KDESUDO=$(which kdesudo 2>/dev/null)
+   if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
+        KDE_SU=$(kde4-config --locate kdesu --path exe 2>/dev/null)
+    else
+        KDE_SU=$(which kdesu 2>/dev/null)
+        if  [ $? -ne 0 -a $distrib = "Ubuntu" ]  ; then
+        KDESU=$KDE_SUDO
+        else
+        KDESU=$KDE_SU
+        fi
+    fi
+
+    if [ $? -eq 0 ] ; then
+        if [ -z "$user" ] ; then
+             if [ $KDESU = "$KDESUDO"]; then
+                  $KDESU "$cmd"
+             else
+                  $KDESU -c "$cmd"
+             fi
+        else
+             if [ $KDESU = "$KDESUDO" ]; then
+                  $KDESUDO -u "$user" "$cmd"
+             else
+                  $KDESUDO -u "$user" -c "$cmd"
+             fi
+        fi
+        if [ $? -eq 0 ]; then
+            exit_success
+        else
+            exit_failure_operation_failed
+        fi
+    else
+        su_generic
+    fi
+}
+
+#----------------------------------------------------------------------------------------
+# Su usage on GNOME 
+#----------------------------------------------------------------------------------------
 su_gnome()
 {
-    GSU=`which gnomesu 2>/dev/null`
+    GSU=$(which gnomesu 2>/dev/null)
     if [ $? -ne 0 ] ; then
-    	GSU=`which gksu 2>/dev/null`
+    	GSU=$(which gksu 2>/dev/null)
     else
-        GSU=`which xsu 2>/dev/null`
+        GSU=$(which xsu 2>/dev/null)
     fi
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
@@ -466,13 +543,14 @@ su_generic()
     
     QUOTE=1
     TERMINAL=""
-    [ -z "$TERMINAL" ] && TERMINAL=`which xterm 2> /dev/null` && QUOTE=0
-    [ -z "$TERMINAL" ] && TERMINAL=`which gnome-terminal 2> /dev/null`
-    #[ -z "$TERMINAL" ] && TERMINAL=`which konsole 2> /dev/null`
-    [ -z "$TERMINAL" ] && TERMINAL=`which aterm 2> /dev/null` && QUOTE=0
-    [ -z "$TERMINAL" ] && TERMINAL=`which Eterm 2> /dev/null` 
-    [ -z "$TERMINAL" ] && TERMINAL=`which kterm 2> /dev/null` && QUOTE=0
-    [ -z "$TERMINAL" ] && TERMINAL=`which lxterminal 2> /dev/null`
+    [ -z "$TERMINAL" ] && TERMINAL=$(which xterm 2> /dev/null) && QUOTE=0
+    [ -z "$TERMINAL" ] && TERMINAL=$(which gnome-terminal 2> /dev/null)
+    # Won't use konsole, it simply won't work :(
+    #[ -z "$TERMINAL" ] && TERMINAL=$(which konsole 2> /dev/null)
+    [ -z "$TERMINAL" ] && TERMINAL=$(which aterm 2> /dev/null) && QUOTE=0
+    [ -z "$TERMINAL" ] && TERMINAL=$(which Eterm 2> /dev/null) 
+    [ -z "$TERMINAL" ] && TERMINAL=$(which kterm 2> /dev/null) && QUOTE=0
+    [ -z "$TERMINAL" ] && TERMINAL=$(which lxterminal 2> /dev/null)
 
     if [ $distrib = "Ubuntu" ]; then
 	 if [ $QUOTE -eq 1 ]; then
@@ -520,9 +598,6 @@ while [ $# -gt 0 ] ; do
         fi
         cmd="$1"
         shift
-        ;;
-      -s)
-        distrib="Ubuntu"
         ;;
 
       -*)

@@ -25,7 +25,7 @@
       <surname>ÖNTAŞ</surname>
     </author>
     <address><email>tarakbumba@gmail.com</email></address>
-    <releaseinfo>This is release 0.7 of the xdg-su Manual.</releaseinfo>
+    <releaseinfo>This is release 0.8 of the xdg-su Manual.</releaseinfo>
   </refentryinfo>
 
   <refmeta>
@@ -41,9 +41,10 @@
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>xdg-su</command>
+      <arg choice="plain"><option>-s</option></arg>
+      <arg ><option>-x</option></arg>
       <arg><option>-u <replaceable>user</replaceable></option></arg>
       <arg choice="plain"><option>-c <replaceable>command</replaceable></option></arg>
-      <arg choice="plain"><option>-s</option></arg>
     </cmdsynopsis>
     <cmdsynopsis>
       <command>xdg-su</command>
@@ -92,6 +93,15 @@
 	<listitem>
 	  <simpara>
 	    run <replaceable>command</replaceable> via sudo
+	  </simpara>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><option>-x</option></term>
+	<listitem>
+	  <simpara>
+	    run <replaceable>command</replaceable> via su. If sudo is default.
 	  </simpara>
 	</listitem>
       </varlistentry>

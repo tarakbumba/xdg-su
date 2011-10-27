@@ -1,3 +1,9 @@
+=== xdg-su 1.1rc1 ===
+2011-03-11 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
+    * Changed: Fix \"sudo\"  option to be specified befor command
+    * Added: An option to using \"su\" ; if \"sudo\"  is the default root previliages mechanism.
+    * Minor code cleanup
+
 === xdg-su 1.1beta2 ===
 2011-03-11 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
     * Added: Configuration option to use \"sudo\" as default

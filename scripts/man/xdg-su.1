@@ -2,12 +2,12 @@
 .\"     Title: xdg-su
 .\"    Author: Kevin Krammer
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 03/12/2011
+.\"      Date: 10/28/2011
 .\"    Manual: xdg-su Manual
-.\"    Source: This is release 0.7 of the xdg-su Manual.
+.\"    Source: This is release 0.8 of the xdg-su Manual.
 .\"  Language: English
 .\"
-.TH "XDG\-SU" "1" "03/12/2011" "This is release 0.7 of the xdg" "xdg-su Manual"
+.TH "XDG\-SU" "1" "10/28/2011" "This is release 0.8 of the xdg" "xdg-su Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 xdg-su \- run a GUI program as root after prompting for the root password
 .SH "SYNOPSIS"
 .HP \w'\fBxdg\-su\fR\ 'u
-\fBxdg\-su\fR [\fB\-u\ \fR\fB\fIuser\fR\fR] \fB\-c\ \fR\fB\fIcommand\fR\fR \fB\-s\fR
+\fBxdg\-su\fR \fB\-s\fR [\fB\-x\fR] [\fB\-u\ \fR\fB\fIuser\fR\fR] \fB\-c\ \fR\fB\fIcommand\fR\fR
 .HP \w'\fBxdg\-su\fR\ 'u
 \fBxdg\-su\fR {\fB\-\-help\fR | \fB\-\-manual\fR | \fB\-\-version\fR}
 .SH "DESCRIPTION"
@@ -63,6 +63,13 @@ as
 run
 \fIcommand\fR
 via sudo
+.RE
+.PP
+\fB\-x\fR
+.RS 4
+run
+\fIcommand\fR
+via su\&. If sudo is default\&.
 .RE
 .PP
 \fB\-\-help\fR

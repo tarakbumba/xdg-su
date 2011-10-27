@@ -1,7 +1,7 @@
 xdg-su
 ---------
 
-    The xdg-su script us an unmaintained part of xdg-utils package 
+    The xdg-su script is an unmaintained part of xdg-utils package 
 which is a set of simple scripts that provide basic desktop integration 
 functions for any Free Desktop, such as Linux.
 
@@ -52,3 +52,11 @@ that your application needs along with your product as a fallback.
 
     I recommend that you place this script in a directory, and
 then add that directory to the end of the PATH.
+
+FROM THE AUTHOR:
+-----
+
+    I'm trying to expand limits of this peace of code with my limited coding knowledge
+and i really need help and assistance. If you find a bug or want to request something
+please feel free to report to me or do it yourself!
+											    Atilla ÖNTAŞ <tarakbumba@gmail.com>
