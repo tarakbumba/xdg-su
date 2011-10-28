@@ -33,35 +33,11 @@
 #   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #   OTHER DEALINGS IN THE SOFTWARE.
 #
-#   Permission is hereby granted, free of charge, to any person obtaining a
-#   copy of this software and associated documentation files (the "Software"),
-#   to deal in the Software without restriction, including without limitation
-#   the rights to use, copy, modify, merge, publish, distribute, sublicense,
-#   and/or sell copies of the Software, and to permit persons to whom the
-#   Software is furnished to do so, subject to the following conditions:
-#
-#   The above copyright notice and this permission notice shall be included
-#   in all copies or substantial portions of the Software.
-#
-#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-#   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-#   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-#   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-#   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-#   OTHER DEALINGS IN THE SOFTWARE.
-#
 #---------------------------------------------
+# Application version
+VERSION="1.1"
 
-# Version of the application
-#---------------------------------------------
-VERSION="xdg-su 1.1rc1"
-
-#------------------------------------------------------------------------------
-# Find if  we' re on a *buntu distro
-# It is important to using sudo as default, without config
-#------------------------------------------------------------------------------
-
+#Detect if we running *buntu or something else
 distrib=$(test -f /etc/lsb-release && 
 	  cat /etc/lsb-release | 
 	  grep "DISTRIB_ID" | 
@@ -71,6 +47,7 @@ if [ -z $distrib ]; then
   distrib="Unknown"
 fi
 
+# Check if xdg-sudo is exists 
 if test -f /etc/xdg-sudo; then 
   distrib="Ubuntu"
 fi
@@ -78,77 +55,6 @@ fi
 manualpage()
 {
 cat << _MANUALPAGE
-Name
-
-   xdg-su - run a GUI program as root after prompting for the root password
-
-Synopsis
-
-   xdg-su -s [-x] [-u user] -c command
-
-   xdg-su { --help | --manual | --version }
-
-Description
-
-   xdg-su provides a graphical dialog that prompts the user for a password to
-   run command as user or as root if no user was specified.
-
-   xdg-su is for use inside a desktop session only.
-
-   xdg-su discards any stdout and stderr output from command.
-
-   You can create an empty "xdg-sudo" file in /etc to use sudo as default to
-   override default "su" mechanism and can avoid using "-s" option.
-
-Options
-
-   -u user
-           run command as user. The default is to run as root.
-
-   -s
-           run command via sudo
-
-   -x
-           run command via su. If sudo is default.
-
-   --help
-           Show command synopsis.
-
-   --manual
-           Show this manualpage.
-
-   --version
-           Show the xdg-utils version information.
-
-Exit Codes
-
-   An exit code of 0 indicates success while a non-zero exit code indicates
-   failure. The following failure codes can be returned:
-
-   1
-           Error in command line syntax.
-
-   2
-           One of the files passed on the command line did not exist.
-
-   3
-           A required tool could not be found.
-
-   4
-           The action failed.
-
-See Also
-
-   su(1)
-
-   sudo
-
-Examples
-
- xdg-su -s -u root -c "/opt/shinythings/bin/install-GUI --install fast"
-
-   Runs the /opt/shinythings/bin/install-GUI command with root permissions
-   via sudo.
 Name
 
 xdg-su - run a GUI program as root after prompting for the root password
@@ -170,27 +76,16 @@ xdg-su discards any stdout and stderr output from command.
 
 Options
 
--c command
-    to run command you must use this. Otherwise xdg-su won't work!
-    
 -u user
     run command as user. The default is to run as root.
-
 -s
-    run command via sudo. Sudo must be properly configured to use this option.
-    *buntu Linux users don't need this option.
+    run command via sudo. Ubuntu users don't need this option.
     You can create an empty "xdg-sudo" file in /etc to use sudo
     as default to override default and avoid using this option.
-
--x
-   run command via su, if default is sudo.
-   
 --help
     Show command synopsis.
-    
 --manual
     Show this manualpage.
-    
 --version
     Show the xdg-utils version information.
 
@@ -228,27 +123,17 @@ _MANUALPAGE
 usage()
 {
 cat << _USAGE
-   xdg-su - run a GUI program as root after prompting for the root password
-
-Synopsis
-
-   xdg-su -s [-x] [-u user] -c command
-
-   xdg-su { --help | --manual | --version }
-
 xdg-su - run a GUI program as root after prompting for the root password
 Create an empty "xdg-sudo" file in /etc to use sudo as default.
 
 Synopsis
 
-xdg-su -s [-x] [-u user] -c command
+xdg-su -s [-u user] -c command
 
 xdg-su { --help | --manual | --version }
 
 _USAGE
 }
-
-#@xdg-utils-common@
 
 #----------------------------------------------------------------------------
 #   Common utility functions included in all XDG wrapper scripts
@@ -284,11 +169,11 @@ exit_success()
 exit_failure_syntax()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
-        echo "Try 'xdg-su --help' for more information." >&2
+        echo "@NAME@: $@" >&2
+        echo "Try '@NAME@ --help' for more information." >&2
     else
         usage
-        echo "Use 'man xdg-su' or 'xdg-su --manual' for additional info."
+        echo "Use 'man @NAME@' or '@NAME@ --manual' for additional info."
     fi
 
     exit 1
@@ -300,7 +185,7 @@ exit_failure_syntax()
 exit_failure_file_missing()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
+        echo "@NAME@: $@" >&2
     fi
 
     exit 2
@@ -312,7 +197,7 @@ exit_failure_file_missing()
 exit_failure_operation_impossible()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
+        echo "@NAME@: $@" >&2
     fi
 
     exit 3
@@ -324,7 +209,7 @@ exit_failure_operation_impossible()
 exit_failure_operation_failed()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
+        echo "@NAME@: $@" >&2
     fi
 
     exit 4
@@ -336,7 +221,7 @@ exit_failure_operation_failed()
 exit_failure_file_permission_read()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
+        echo "@NAME@: $@" >&2
     fi
 
     exit 5
@@ -348,7 +233,7 @@ exit_failure_file_permission_read()
 exit_failure_file_permission_write()
 {
     if [ $# -gt 0 ]; then
-        echo "xdg-su: $@" >&2
+        echo "@NAME@: $@" >&2
     fi
 
     exit 6
@@ -375,10 +260,10 @@ check_vendor_prefix()
          ;;
     esac
 
-    echo "xdg-su: $file_label '$file' does not have a proper vendor prefix" >&2
+    echo "@NAME@: $file_label '$file' does not have a proper vendor prefix" >&2
     echo 'A vendor prefix consists of alpha characters ([a-zA-Z]) and is terminated' >&2
     echo 'with a dash ("-"). An example '"$file_label"' is '"'example-$file'" >&2
-    echo "Use --novendor to override or 'xdg-su --manual' for additional info." >&2
+    echo "Use --novendor to override or '@NAME@ --manual' for additional info." >&2
     exit 1
 }
 
@@ -410,7 +295,7 @@ check_common_commands()
         case "$parm" in
             --help)
             usage
-            echo "Use 'man xdg-su' or 'xdg-su --manual' for additional info."
+            echo "Use 'man @NAME@' or '@NAME@ --manual' for additional info."
             exit_success
             ;;
 
@@ -420,7 +305,7 @@ check_common_commands()
             ;;
 
             --version)
-            echo "xdg-su 1.0.2"
+            echo "@NAME@ 1.0.2"
             exit_success
             ;;
         esac
@@ -469,44 +354,6 @@ kfmclient_fix_exit_code()
     return 0
 }
 
-#-------------------------------------------------------
-## Checks if user specified "sudo" usage
-#-------------------------------------------------------
-
-check_use_sudo()
-{
-    while [ $# -gt 0 ] ; do
-        parm="$1"
-        shift
-
-        case "$parm" in
-           -s)
-	    SUDO=$(which sudo 2>/dev/null)
-	    if [ -z "$SUDO" ] ; then
-	       exit_failure_syntax "Application 'sudo'  does not exist in your system. Please install it if you want use to..."
-	   else
-            distrib="Ubuntu"
-            fi
-            shift
-            ;;
-            
-           -x)
-	    distrib="Unknown"
-            shift
-            ;;
-        esac
-    done
-}
-
-check_use_sudo  "$@"
-
-
-#----------------------------------------------------------------------------------------
-# SUDO USAGE ON GNOME. 
-# If gksudo is present then use it. Otherwise default to gksu. 
-# If neither kdesudo nor kdesu is presnt use a terminal
-#----------------------------------------------------------------------------------------
-
 sudo_gnome()
 {
     GSU=$(which gksudo 2>/dev/null)
@@ -527,38 +374,26 @@ sudo_gnome()
     fi
 }
 
-#----------------------------------------------------------------------------------------
-# SUDO USAGE ON KDE. 
-# If kdesudo is present then use it. Otherwise default to kdesu. 
-# If neither kdesudo nor kdesu is presnt use a terminal
-#----------------------------------------------------------------------------------------
 sudo_kde()
 {
     KDESUDO=$(which kdesudo 2>/dev/null)
     if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
-        KDE_SU=$(kde4-config --locate kdesu --path exe 2>/dev/null)
+        KDESU=$(kde4-config --locate kdesu --path exe 2>/dev/null)
     else
-        KDE_SU=$(which kdesu 2>/dev/null)
+        KDESU=$(which kdesu 2>/dev/null)
     fi
     if [ -z "$KDESUDO" ] ; then
-      KDESU=$KDE_SU
+      KDE_SU=$KDESU
     else
-      KDESU=$KDESUDO
+      KDE_SU=$KDESUDO
     fi
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
-             if [ $KDESU = "$KDESUDO"]; then
-                  $KDESU "$cmd"
-             else
-                  $KDESU -c "$cmd"
-             fi
+            $KDE_SU "$cmd"
         else
-             if [ $KDESU = "$KDESUDO" ]; then
-                  $KDESUDO -u "$user" "$cmd"
-             else
-                  $KDESUDO -u "$user" -c "$cmd"
-             fi
+            $KDE_SU -u "$user" "$cmd"
         fi
+
         if [ $? -eq 0 ]; then
             exit_success
         else
@@ -568,39 +403,34 @@ sudo_kde()
         su_generic
     fi
 }
-
-#----------------------------------------------------------------------------------------
-# Su usage on KDE. 
-#----------------------------------------------------------------------------------------
 
 su_kde()
 {
-    KDESUDO=$(which kdesudo 2>/dev/null)
-   if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
+    if [ x"$KDE_SESSION_VERSION" = x"4" ]; then
         KDE_SU=$(kde4-config --locate kdesu --path exe 2>/dev/null)
     else
         KDE_SU=$(which kdesu 2>/dev/null)
-        if  [ $? -ne 0 -a $distrib = "Ubuntu" ]  ; then
-        KDESU=$KDE_SUDO
-        else
-        KDESU=$KDE_SU
+        if [ $? -ne 0 -a $distrib = "Ubuntu" ] ; then
+            KDE_SU=$(which kdesudo 2>/dev/null)
+	else
+	    KDE_SU=$(which kdesu 2>/dev/null)
         fi
     fi
-
     if [ $? -eq 0 ] ; then
         if [ -z "$user" ] ; then
-             if [ $KDESU = "$KDESUDO"]; then
-                  $KDESU "$cmd"
+             if [ $distrib = "Ubuntu" ]; then
+                  $KDE_SU "$cmd"
              else
-                  $KDESU -c "$cmd"
+                  $KDE_SU -c "$cmd"
              fi
         else
-             if [ $KDESU = "$KDESUDO" ]; then
-                  $KDESUDO -u "$user" "$cmd"
+             if [ $distrib = "Ubuntu" ]; then
+                  $KDE_SU -u "$user" "$cmd"
              else
-                  $KDESUDO -u "$user" -c "$cmd"
+                  $KDE_SU -u "$user" -c "$cmd"
              fi
         fi
+
         if [ $? -eq 0 ]; then
             exit_success
         else
@@ -611,9 +441,6 @@ su_kde()
     fi
 }
 
-#----------------------------------------------------------------------------------------
-# Su usage on GNOME 
-#----------------------------------------------------------------------------------------
 su_gnome()
 {
     GSU=$(which gnomesu 2>/dev/null)
@@ -663,11 +490,10 @@ su_generic()
     TERMINAL=""
     [ -z "$TERMINAL" ] && TERMINAL=$(which xterm 2> /dev/null) && QUOTE=0
     [ -z "$TERMINAL" ] && TERMINAL=$(which gnome-terminal 2> /dev/null)
-    # Won't use konsole, it simply won't work :(
     #[ -z "$TERMINAL" ] && TERMINAL=$(which konsole 2> /dev/null)
     [ -z "$TERMINAL" ] && TERMINAL=$(which aterm 2> /dev/null) && QUOTE=0
     [ -z "$TERMINAL" ] && TERMINAL=$(which Eterm 2> /dev/null) 
-    [ -z "$TERMINAL" ] && TERMINAL=$(which kterm 2> /dev/null) && QUOTE=0
+    [ -z "$TERMINAL" ] && TERMINAL=$(which kterm 2> /dev/null ) && QUOTE=0
     [ -z "$TERMINAL" ] && TERMINAL=$(which lxterminal 2> /dev/null)
 
     if [ $distrib = "Ubuntu" ]; then
@@ -695,7 +521,7 @@ su_generic()
 
 user=
 cmd=
-use_sudo=
+
 while [ $# -gt 0 ] ; do
     parm="$1"
     shift
@@ -716,6 +542,21 @@ while [ $# -gt 0 ] ; do
         fi
         cmd="$1"
         shift
+        ;;
+
+      -s)
+        if [ -z "$(which sudo 2>/dev/null)" ] ; then
+            echo "xdg-su:   Sudo not found. Please install it to use this option. Defaulting to \"su\"
+
+" 
+            distrib="Unknown"
+        else
+            distrib="Ubuntu"
+        fi
+        ;;
+
+     -x)
+	    distrib="Unknown"
         ;;
 
       -*)
