@@ -33,6 +33,24 @@
 #   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #   OTHER DEALINGS IN THE SOFTWARE.
 #
+#   Permission is hereby granted, free of charge, to any person obtaining a
+#   copy of this software and associated documentation files (the "Software"),
+#   to deal in the Software without restriction, including without limitation
+#   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+#   and/or sell copies of the Software, and to permit persons to whom the
+#   Software is furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be included
+#   in all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+#   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+#   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+#   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+#   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#   OTHER DEALINGS IN THE SOFTWARE.
+#
 #---------------------------------------------
 
 # Version of the application
@@ -60,6 +78,77 @@ fi
 manualpage()
 {
 cat << _MANUALPAGE
+Name
+
+   xdg-su - run a GUI program as root after prompting for the root password
+
+Synopsis
+
+   xdg-su -s [-x] [-u user] -c command
+
+   xdg-su { --help | --manual | --version }
+
+Description
+
+   xdg-su provides a graphical dialog that prompts the user for a password to
+   run command as user or as root if no user was specified.
+
+   xdg-su is for use inside a desktop session only.
+
+   xdg-su discards any stdout and stderr output from command.
+
+   You can create an empty "xdg-sudo" file in /etc to use sudo as default to
+   override default "su" mechanism and can avoid using "-s" option.
+
+Options
+
+   -u user
+           run command as user. The default is to run as root.
+
+   -s
+           run command via sudo
+
+   -x
+           run command via su. If sudo is default.
+
+   --help
+           Show command synopsis.
+
+   --manual
+           Show this manualpage.
+
+   --version
+           Show the xdg-utils version information.
+
+Exit Codes
+
+   An exit code of 0 indicates success while a non-zero exit code indicates
+   failure. The following failure codes can be returned:
+
+   1
+           Error in command line syntax.
+
+   2
+           One of the files passed on the command line did not exist.
+
+   3
+           A required tool could not be found.
+
+   4
+           The action failed.
+
+See Also
+
+   su(1)
+
+   sudo
+
+Examples
+
+ xdg-su -s -u root -c "/opt/shinythings/bin/install-GUI --install fast"
+
+   Runs the /opt/shinythings/bin/install-GUI command with root permissions
+   via sudo.
 Name
 
 xdg-su - run a GUI program as root after prompting for the root password
@@ -139,6 +228,14 @@ _MANUALPAGE
 usage()
 {
 cat << _USAGE
+   xdg-su - run a GUI program as root after prompting for the root password
+
+Synopsis
+
+   xdg-su -s [-x] [-u user] -c command
+
+   xdg-su { --help | --manual | --version }
+
 xdg-su - run a GUI program as root after prompting for the root password
 Create an empty "xdg-sudo" file in /etc to use sudo as default.
 
@@ -159,7 +256,8 @@ _USAGE
 
 DEBUG()
 {
-  [ ${XDG_UTILS_DEBUG_LEVEL-0} -lt $1 ] && return 0;
+  [ -z "${XDG_UTILS_DEBUG_LEVEL}" ] && return 0;
+  [ ${XDG_UTILS_DEBUG_LEVEL} -lt $1 ] && return 0;
   shift
   echo "$@" >&2
 }
@@ -268,16 +366,18 @@ check_input_file()
 
 check_vendor_prefix()
 {
-    file=$(basename "$1")
+    file_label="$2"
+    [ -n "$file_label" ] || file_label="filename"
+    file=`basename "$1"`
     case "$file" in
        [a-zA-Z]*-*)
          return
          ;;
     esac
 
-    echo "xdg-su: filename '$file' does not have a proper vendor prefix" >&2
+    echo "xdg-su: $file_label '$file' does not have a proper vendor prefix" >&2
     echo 'A vendor prefix consists of alpha characters ([a-zA-Z]) and is terminated' >&2
-    echo 'with a dash ("-"). An example filename is '"'example-$file'" >&2
+    echo 'with a dash ("-"). An example '"$file_label"' is '"'example-$file'" >&2
     echo "Use --novendor to override or 'xdg-su --manual' for additional info." >&2
     exit 1
 }
@@ -291,7 +391,7 @@ check_output_file()
             exit_failure_file_permission_write "no permission to write to file '$1'"
         fi
     else
-        DIR=$(dirname "$1")
+        DIR=`dirname "$1"`
         if [ ! -w "$DIR" -o ! -x "$DIR" ]; then
             exit_failure_file_permission_write "no permission to create file '$1'"
         fi
@@ -320,7 +420,7 @@ check_common_commands()
             ;;
 
             --version)
-            echo "$VERSION"
+            echo "xdg-su 1.0.2"
             exit_success
             ;;
         esac
@@ -328,6 +428,8 @@ check_common_commands()
 }
 
 check_common_commands "$@"
+
+[ -z "${XDG_UTILS_DEBUG_LEVEL}" ] && unset XDG_UTILS_DEBUG_LEVEL;
 if [ ${XDG_UTILS_DEBUG_LEVEL-0} -lt 1 ]; then
     # Be silent
     xdg_redirect_output=" > /dev/null 2> /dev/null"
@@ -335,6 +437,37 @@ else
     # All output to stderr
     xdg_redirect_output=" >&2"
 fi
+
+#--------------------------------------
+# Checks for known desktop environments
+# set variable DE to the desktop environments name, lowercase
+
+detectDE()
+{
+    if [ x"$KDE_FULL_SESSION" = x"true" ]; then DE=kde;
+    elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=gnome;
+    elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=gnome;
+    elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=xfce;
+    elif [[ $(ps aux) =~ ""lxsession"" ]]; then DE=lxde;
+    fi
+}
+
+#----------------------------------------------------------------------------
+# kfmclient exec/openURL can give bogus exit value in KDE <= 3.5.4
+# It also always returns 1 in KDE 3.4 and earlier
+# Simply return 0 in such case
+
+kfmclient_fix_exit_code()
+{
+    version=`kde${KDE_SESSION_VERSION}-config --version 2>/dev/null | grep KDE`
+    major=`echo $version | sed 's/KDE: \([0-9]\).*/\1/'`
+    minor=`echo $version | sed 's/KDE: [0-9]*\.\([0-9]\).*/\1/'`
+    release=`echo $version | sed 's/KDE: [0-9]*\.[0-9]*\.\([0-9]\).*/\1/'`
+    test "$major" -gt 3 && return $1
+    test "$minor" -gt 5 && return $1
+    test "$release" -gt 4 && return $1
+    return 0
+}
 
 #-------------------------------------------------------
 ## Checks if user specified "sudo" usage
@@ -367,21 +500,6 @@ check_use_sudo()
 
 check_use_sudo  "$@"
 
-
-#--------------------------------------
-# Checks for known desktop environments
-# set variable DE to the desktop environments name, lowercase
-
-detectDE()
-{
-    if [ x"$KDE_FULL_SESSION" = x"true" ]; then DE=kde;
-    elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=gnome;
-    elif xprop -root _DT_SAVE_MODE | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=xfce;
-    elif [[ )ps aux) =~ ""lxsession"" ]]; then DE=lxde;
-    fi
-}
-
-#----------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------
 # SUDO USAGE ON GNOME. 
