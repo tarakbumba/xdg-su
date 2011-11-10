@@ -1,0 +1,3 @@
+== xdg-su 1.2 ==
+* Add localization support (Does it worth to add another -gettext- dependency?)
+* Find a way to inwoke policykit instead of (less secure?) other graphical ways
