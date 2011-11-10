@@ -53,7 +53,7 @@
 #
 #---------------------------------------------
 # Application version
-VERSION="1.1"
+VERSION="1.2"
 
 #Detect if we running *buntu or something else
 distrib=$(test -f /etc/lsb-release && 
@@ -580,6 +580,22 @@ su_xfce()
         fi
 }
 
+su_ktsuss()
+{
+
+    KTSUSS=$(which ktsuss 2> /dev/null)
+    if [ $? -eq 0 ] ; then
+        $KTSUSS -u "$user" -c "$cmd"
+        if [ $? -eq 0 ]; then
+            exit_success
+        else
+            exit_failure_operation_failed
+        fi
+    else
+        su_generic
+    fi
+}
+
 su_generic()
 {
     
@@ -592,18 +608,27 @@ su_generic()
     [ -z "$TERMINAL" ] && TERMINAL=$(which Eterm 2> /dev/null) 
     [ -z "$TERMINAL" ] && TERMINAL=$(which kterm 2> /dev/null ) && QUOTE=0
     [ -z "$TERMINAL" ] && TERMINAL=$(which lxterminal 2> /dev/null)
+    [ -z "$TERMINAL" ] && TERMINAL=$(which Terminal 2> /dev/null) && QUOTE=0
 
     if [ $distrib = "Ubuntu" ]; then
 	 if [ $QUOTE -eq 1 ]; then
               $TERMINAL -e "sudo $cmd"
 	 else
+	    if  [ $TERMINAL = $(which Terminal 2> /dev/null) ]; then
+	      $TERMINAL -H -x sudo "$cmd"
+	   else
 	      $TERMINAL -e sudo "$cmd"
+	   fi
 	 fi
     else
 	 if [ $QUOTE -eq 1 ]; then
 	      $TERMINAL -e "su -c \"$cmd\""
 	 else
+	    if  [ $TERMINAL = $(which Terminal 2> /dev/null) ]; then
+	      $TERMINAL  -x  su -c "$cmd"
+	   else
 	      $TERMINAL -e su -c "$cmd"
+	   fi
 	 fi
     fi
 
@@ -694,7 +719,7 @@ case "$DE" in
     ;;
 
     generic)
-    su_generic
+    su_ktsuss
     ;;
 
      *)

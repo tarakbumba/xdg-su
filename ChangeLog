@@ -1,5 +1,14 @@
+=== xdg-su 1.2rc1 ===
+2011-11-10 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
+    * Added: Ktsuss support
+    * Added: Terminal support
+
+=== xdg-su 1.1 ===
+2011-10-28 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
+    * Initial relase
+
 === xdg-su 1.1rc1 ===
-2011-03-11 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
+2011-10-20 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
     * Changed: Fix \"sudo\"  option to be specified befor command
     * Added: An option to using \"su\" ; if \"sudo\"  is the default root previliages mechanism.
     * Minor code cleanup
