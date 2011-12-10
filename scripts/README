@@ -3,7 +3,7 @@
 
 Synopsis
 
-   xdg-su -s [-x] [-u user] -c command
+   xdg-su [-s] [-x] user command
 
    xdg-su { --help | --manual | --version }
 

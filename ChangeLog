@@ -1,3 +1,9 @@
+=== xdg-su 1.2rc2 ===
+2011-12-10 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
+    * Added: xdg-su now can detect if it is running on X or ttys. If no X server than exists with informational message
+    * Removed: Usage of "-u" and "-c" option.  xdg-su now automatically detect user and command
+    * Changed: Structure of code. Some code removed and some change place to reflect above.
+
 === xdg-su 1.2rc1 ===
 2011-11-10 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
     * Added: Ktsuss support
@@ -5,7 +11,7 @@
 
 === xdg-su 1.1 ===
 2011-10-28 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
-    * Initial relase
+    * Initial release
 
 === xdg-su 1.1rc1 ===
 2011-10-20 Atilla ÖNTAŞ <tarakbumba@gmail.com> 

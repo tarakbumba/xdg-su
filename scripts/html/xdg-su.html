@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>xdg-su</title><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="refentry" title="xdg-su"><a name="xdg-su"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>xdg-su &#8212; run a GUI program as root after prompting for the root password</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">xdg-su</code>   <code class="option">-s</code>  [<code class="option">-x</code>] [<code class="option">-u <em class="replaceable"><code>user</code></em></code>]  <code class="option">-c <em class="replaceable"><code>command</code></em></code> </p></div><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  { <code class="option">--help</code>  |   <code class="option">--manual</code>  |   <code class="option">--version</code> }</p></div></div><div class="refsect1" title="Description"><a name="description"></a><h2>Description</h2><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>xdg-su</title><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="refentry" title="xdg-su"><a name="xdg-su"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>xdg-su &#8212; run a GUI program as root after prompting for the root password</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  [<code class="option">-s</code>] [<code class="option">-x</code>]  <em class="replaceable"><code>user</code></em>   <em class="replaceable"><code>command</code></em> </p></div><div class="cmdsynopsis"><p><code class="command">xdg-su</code>  { <code class="option">--help</code>  |   <code class="option">--manual</code>  |   <code class="option">--version</code> }</p></div></div><div class="refsect1" title="Description"><a name="description"></a><h2>Description</h2><p>
       xdg-su provides a graphical dialog that prompts the user for a password
       to run <em class="replaceable"><code>command</code></em> as <em class="replaceable"><code>user</code></em>
       or as root if no user was specified.
@@ -10,7 +10,7 @@
     </p><p>
       You can create an empty "xdg-sudo" file in /etc to use sudo
       as default to override default "su" mechanism and can avoid using "-s" option.
-    </p></div><div class="refsect1" title="Options"><a name="options"></a><h2>Options</h2><div class="variablelist"><dl><dt><span class="term"><code class="option">-u <em class="replaceable"><code>user</code></em></code></span></dt><dd>
+    </p></div><div class="refsect1" title="Options"><a name="options"></a><h2>Options</h2><div class="variablelist"><dl><dt><span class="term"><em class="replaceable"><code>user</code></em></span></dt><dd>
 	    run <em class="replaceable"><code>command</code></em> as
             <em class="replaceable"><code>user</code></em>. The default is to run as root.
 	  </dd><dt><span class="term"><code class="option">-s</code></span></dt><dd>
@@ -38,7 +38,7 @@
     </p><p><span class="citerefentry"><span class="refentrytitle">sudo</span></span>
     </p></div><div class="refsect1" title="Examples"><a name="examples"></a><h2>Examples</h2><p>
 </p><pre class="programlisting">
-xdg-su -s -u root -c "/opt/shinythings/bin/install-GUI --install fast"
+xdg-su -s user -c "/opt/shinythings/bin/install-GUI --install fast"
 </pre><p>
-       Runs the /opt/shinythings/bin/install-GUI command with root permissions via sudo.
+       Runs the /opt/shinythings/bin/install-GUI command as "user"  via sudo.
     </p></div></div></body></html>

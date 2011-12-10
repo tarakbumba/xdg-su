@@ -2,12 +2,12 @@
 .\"     Title: xdg-su
 .\"    Author: Kevin Krammer
 .\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 10/28/2011
+.\"      Date: 12/10/2011
 .\"    Manual: xdg-su Manual
-.\"    Source: This is release 0.8 of the xdg-su Manual.
+.\"    Source: This is release 1.2 of the xdg-su Manual.
 .\"  Language: English
 .\"
-.TH "XDG\-SU" "1" "10/28/2011" "This is release 0.8 of the xdg" "xdg-su Manual"
+.TH "XDG\-SU" "1" "12/10/2011" "This is release 1.2 of the xdg" "xdg-su Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -31,7 +31,7 @@
 xdg-su \- run a GUI program as root after prompting for the root password
 .SH "SYNOPSIS"
 .HP \w'\fBxdg\-su\fR\ 'u
-\fBxdg\-su\fR \fB\-s\fR [\fB\-x\fR] [\fB\-u\ \fR\fB\fIuser\fR\fR] \fB\-c\ \fR\fB\fIcommand\fR\fR
+\fBxdg\-su\fR [\fB\-s\fR] [\fB\-x\fR] \fIuser\fR \fIcommand\fR
 .HP \w'\fBxdg\-su\fR\ 'u
 \fBxdg\-su\fR {\fB\-\-help\fR | \fB\-\-manual\fR | \fB\-\-version\fR}
 .SH "DESCRIPTION"
@@ -50,7 +50,7 @@ xdg\-su discards any stdout and stderr output from
 You can create an empty "xdg\-sudo" file in /etc to use sudo as default to override default "su" mechanism and can avoid using "\-s" option\&.
 .SH "OPTIONS"
 .PP
-\fB\-u \fR\fB\fIuser\fR\fR
+\fIuser\fR
 .RS 4
 run
 \fIcommand\fR
@@ -122,13 +122,13 @@ The action failed\&.
 .RS 4
 .\}
 .nf
-xdg\-su \-s \-u root \-c "/opt/shinythings/bin/install\-GUI \-\-install fast"
+xdg\-su \-s user \-c "/opt/shinythings/bin/install\-GUI \-\-install fast"
 .fi
 .if n \{\
 .RE
 .\}
 .sp
-Runs the /opt/shinythings/bin/install\-GUI command with root permissions via sudo\&.
+Runs the /opt/shinythings/bin/install\-GUI command as "user" via sudo\&.
 .SH "AUTHORS"
 .PP
 \fBKevin Krammer\fR
@@ -147,5 +147,5 @@ Author.
 .RE
 .SH "COPYRIGHT"
 .br
-Copyright \(co 2010
+Copyright \(co 2011
 .br

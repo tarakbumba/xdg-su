@@ -8,7 +8,7 @@
   <refentryinfo>
     <title>xdg-su Manual</title>
     <copyright>
-      <year>2010</year>
+      <year>2011</year>
     </copyright>
     <author>
       <firstname>Kevin</firstname>
@@ -25,7 +25,7 @@
       <surname>ÖNTAŞ</surname>
     </author>
     <address><email>tarakbumba@gmail.com</email></address>
-    <releaseinfo>This is release 0.8 of the xdg-su Manual.</releaseinfo>
+    <releaseinfo>This is release 1.2 of the xdg-su Manual.</releaseinfo>
   </refentryinfo>
 
   <refmeta>
@@ -41,10 +41,10 @@
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>xdg-su</command>
-      <arg choice="plain"><option>-s</option></arg>
+      <arg><option>-s</option></arg>
       <arg ><option>-x</option></arg>
-      <arg><option>-u <replaceable>user</replaceable></option></arg>
-      <arg choice="plain"><option>-c <replaceable>command</replaceable></option></arg>
+      <arg choice="plain"><replaceable>user</replaceable></arg>
+      <arg choice="plain"><replaceable>command</replaceable></arg>
     </cmdsynopsis>
     <cmdsynopsis>
       <command>xdg-su</command>
@@ -79,7 +79,7 @@
     <title>Options</title>
     <variablelist>
       <varlistentry>
-	<term><option>-u <replaceable>user</replaceable></option></term>
+	<term><replaceable>user</replaceable></term>
 	<listitem>
 	  <simpara>
 	    run <replaceable>command</replaceable> as
@@ -190,9 +190,9 @@
     <title>Examples</title>
     <para>
 <programlisting>
-xdg-su -s -u root -c "/opt/shinythings/bin/install-GUI --install fast"
+xdg-su -s user -c "/opt/shinythings/bin/install-GUI --install fast"
 </programlisting>
-       Runs the /opt/shinythings/bin/install-GUI command with root permissions via sudo.
+       Runs the /opt/shinythings/bin/install-GUI command as "user"  via sudo.
     </para>
   </refsect1>
 </refentry>
