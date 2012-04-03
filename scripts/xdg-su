@@ -555,6 +555,7 @@ su_generic()
     [ -z "$TERMINAL" ] && TERMINAL=$(which kterm 2> /dev/null ) && QUOTE=0
     [ -z "$TERMINAL" ] && TERMINAL=$(which lxterminal 2> /dev/null)
     [ -z "$TERMINAL" ] && TERMINAL=$(which Terminal 2> /dev/null) && QUOTE=0
+    [ -z "$TERMINAL" ] && TERMINAL=$(which Terminal 2> /dev/null) && QUOTE=0
 
     if [ $distrib = "Ubuntu" ]; then
 	 if [ $QUOTE -eq 1 ]; then

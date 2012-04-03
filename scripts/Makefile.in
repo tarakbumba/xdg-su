@@ -19,7 +19,7 @@ MANPAGES=	$(SCRIPTS:%=man/%.1)
 WEBPAGES=	$(SCRIPTS:%=%.html)
 XMLFILES=	$(SCRIPTS:%=desc/%.xml)
 
-all:
+all: scripts
 
 html:		index.html $(WEBPAGES)
 
