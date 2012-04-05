@@ -1,3 +1,6 @@
-== xdg-su 1.2 ==
+== xdg-su 1.3==
 * Add localization support (Does it worth to add another -gettext- dependency?)
+   Still undecided. There is no future report to request this.
 * Find a way to inwoke policykit instead of (less secure?) other graphical ways
+  NoFix. The way su and sudo works it is imposibble to inwoke graphical interface
+  without desktop specific tools (like gnomesu or kdesu)
