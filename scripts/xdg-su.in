@@ -11,7 +11,7 @@
 #   Copyright 2006, Jeremy White <jwhite@codeweavers.com>
 #   Copyright 2006, Kevin Krammer <kevin.krammer@gmx.at>
 #   Copyright 2009, Aurelien Lefebvre <alefebvre@mandriva.com>
-#   Copyright 2010-2011, Atilla ÖNTAŞ <tarakbumba@gmail.com>
+#   Copyright 2010-2013, Atilla ÖNTAŞ <tarakbumba@gmail.com>
 #
 #   LICENSE:
 #
@@ -35,13 +35,13 @@
 #
 #---------------------------------------------
 # Application version
-VERSION="1.2"
+VERSION="1.2.2"
 
 #Detect if we running *buntu or something else
 distrib=$(test -f /etc/lsb-release && 
 	  cat /etc/lsb-release | 
 	  grep "DISTRIB_ID" | 
-	  sed 's/DISTRIB_ID=\([A-Za-z]\\)/\1/')
+	  sed 's/DISTRIB_ID=\([A-Za-z]\)/\1/')
 
 if [ -z $distrib ]; then
   distrib="Unknown"

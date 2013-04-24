@@ -1,11 +1,15 @@
+=== xdg-su 1.2.2 ===
+2013-04-21 Atilla ÖNTAŞ <tarakbumba@gmail.com>
+    * Fixed: Sed error at line 44 (Thanks to Brian F. G. BIDULOCK)
+
 === xdg-su 1.2.1 ===
 2012-04-05 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
-* Removed: xdg-su preccompiled script as it broke compilation from source
+    * Removed: xdg-su preccompiled script as it broke compilation from source
 
 === xdg-su 1.2 ===
 2012-04-04 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
-* Added: Added urxvt support
-* Fixed: scripts/MAKEFILE
+    * Added: Added urxvt support
+    * Fixed: scripts/MAKEFILE
 
 === xdg-su 1.2rc2 ===
 2011-12-10 Atilla ÖNTAŞ <tarakbumba@gmail.com> 
